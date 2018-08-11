@@ -8,4 +8,4 @@ Previews email message files (EML) in VS Code.
 
 ## Changelog
 
-See [CHANGELOG.md].
+See the [changelog](CHANGELOG.md).
