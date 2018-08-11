@@ -1,0 +1,208 @@
+Return-Path: <tomas@hubelbauer.net>
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	 by sloti37d1t23 (Cyrus 3.1.5-11-g6b5e7b6-fmstable-20180717v1) with LMTPA;
+	 Sat, 11 Aug 2018 07:19:58 -0400
+X-Cyrus-Session-Id: sloti37d1t23-3210125-1533986398-2-9106604103526028004
+X-Sieve: CMU Sieve 3.0
+X-Spam-known-sender: yes ("Address tomas@hubelbauer.net in From header is in addressbook");
+ in-addressbook
+X-Spam-score: 0.0
+X-Spam-hits: ALL_TRUSTED -1, BAYES_00 -1.9, HTML_IMAGE_ONLY_08 1.651,
+  HTML_MESSAGE 0.001, ME_BETA_RULES 0.01, ME_FROM_EQ_TO 0.01,
+  SPF_PASS -0.001, T_REMOTE_IMAGE 0.01, LANGUAGES unknown, BAYES_USED user,
+  SA_VERSION 3.4.0
+X-Spam-source: IP='Unknown', Host='unk', Country='unk', FromHeader='net', MailFrom='net'
+X-Spam-charsets: from='utf-8', to='utf-8', plain='utf-8', html='utf-8'
+X-Resolved-to: tomas@hubelbauer.net
+X-Delivered-to: tomas@hubelbauer.net
+X-Mail-from: tomas@hubelbauer.net
+Received: from mx4 ([10.202.2.203])
+  by compute5.internal (LMTPProxy); Sat, 11 Aug 2018 07:19:58 -0400
+Received: from mx4.messagingengine.com (localhost [127.0.0.1])
+	by mailmx.nyi.internal (Postfix) with ESMTP id 65892C831E
+	for <tomas@hubelbauer.net>; Sat, 11 Aug 2018 07:19:58 -0400 (EDT)
+Received: from mailmx.nyi.internal (localhost [127.0.0.1])
+    by mx4.messagingengine.com (Authentication Milter) with ESMTP
+    id D2E511DDE18;
+    Sat, 11 Aug 2018 07:19:58 -0400
+ARC-Seal: i=1; a=rsa-sha256; cv=none; d=messagingengine.com; s=fm3; t=
+    1533986398; b=QgHBYuXVJSxVxxDFBMlY7y/zx0jjBvMVRrObB7YZRTGBiVVPhN
+    fsVWZa8azrt1sb87CU3wa6PnI0MGg3R0s69Lb+MEKMhmfxQT6bCEFNJVFQeyWpVG
+    l2CYGoimDCwPf/Oj2xc9dQ0qolmmuJuDE4OGXw3OaO5CdznQACsHt/TEN3TU5tfa
+    oEc6iBdI0qGUjqgngGoNVo78cx2dH23f6yKTtImTQ0vb1K/g+Fp1eQm6VaariJu+
+    PsDNV8zyc3XNnjS6Q3IYs9H9Tw0QqUIic+h1CC0KLPsCWM6kOolTy5n3ARHVDhAz
+    fsPzmwQnH7GS42mZumwhu6wsAWfQuDMgT2wg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=
+    messagingengine.com; h=message-id:from:to:mime-version
+    :content-transfer-encoding:content-type:date:subject; s=fm3; t=
+    1533986398; bh=U82ltyHV0a+a9rrSlV1v6IcChzuga2jKdSJJ09bSmsQ=; b=C
+    d2CZg+EuqkEkbrYcheZWI0DR2aRpF9f3XylCCD/iD29bO6JcExhyLhQNDyFXOepw
+    pqw2iAHnG9jB5d+Ipnp8iGnNZgJzs1jCg3xMhUA43kOtzSn9mb7kic9jOmFL4L97
+    h+xSS+sFdjMWy5/n4ckkYyyCm+j+RqWcSgPRHBEi6+tx88fuqgg5sAAu2byBIAgE
+    sljUsrLs49XmhifULL5lWti5au8ONHyI6LKMOd81ut3k1YjsVXNp9S1yySMQ77GN
+    V+wS72Bo7qk64GMIaHAlPZEqT9p8ulFKKTdvD5Pj6XLoUehaYJSKT4RXgcRCOSQf
+    ayjJYHS52YDABQLlxokeg==
+ARC-Authentication-Results: i=1; mx4.messagingengine.com; arc=none (no signatures found);
+    dkim=pass (1024-bit rsa key sha256) header.d=hubelbauer.net
+    header.i=@hubelbauer.net header.b=l6V1jqp5 header.a=rsa-sha256
+    header.s=mesmtp x-bits=1024;
+    dkim=pass (2048-bit rsa key sha256) header.d=messagingengine.com
+    header.i=@messagingengine.com header.b=tqjQlA4x header.a=rsa-sha256
+    header.s=fm3 x-bits=2048;
+    dmarc=none (p=none,sp=none,d=none) header.from=hubelbauer.net;
+    iprev=pass policy.iprev=66.111.4.25 (out1-smtp.messagingengine.com);
+    spf=pass smtp.mailfrom=tomas@hubelbauer.net
+    smtp.helo=out1-smtp.messagingengine.com;
+    x-aligned-from=pass (Address match);
+    x-cm=none score=0;
+    x-ptr=pass smtp.helo=out1-smtp.messagingengine.com
+    policy.ptr=out1-smtp.messagingengine.com;
+    x-return-mx=pass header.domain=hubelbauer.net policy.is_org=yes
+    (MX Record found);
+    x-return-mx=pass smtp.domain=hubelbauer.net policy.is_org=yes
+    (MX Record found);
+    x-tls=pass smtp.version=TLSv1.2 smtp.cipher=ECDHE-RSA-AES128-GCM-SHA256
+    smtp.bits=128/128;
+    x-vs=clean score=15 state=0
+Authentication-Results: mx4.messagingengine.com;
+    arc=none (no signatures found);
+    dkim=pass (1024-bit rsa key sha256) header.d=hubelbauer.net
+      header.i=@hubelbauer.net header.b=l6V1jqp5 header.a=rsa-sha256
+      header.s=mesmtp x-bits=1024;
+    dkim=pass (2048-bit rsa key sha256) header.d=messagingengine.com
+      header.i=@messagingengine.com header.b=tqjQlA4x header.a=rsa-sha256
+      header.s=fm3 x-bits=2048;
+    dmarc=none (p=none,sp=none,d=none) header.from=hubelbauer.net;
+    iprev=pass policy.iprev=66.111.4.25 (out1-smtp.messagingengine.com);
+    spf=pass smtp.mailfrom=tomas@hubelbauer.net
+      smtp.helo=out1-smtp.messagingengine.com;
+    x-aligned-from=pass (Address match);
+    x-cm=none score=0;
+    x-ptr=pass smtp.helo=out1-smtp.messagingengine.com
+      policy.ptr=out1-smtp.messagingengine.com;
+    x-return-mx=pass header.domain=hubelbauer.net policy.is_org=yes
+      (MX Record found);
+    x-return-mx=pass smtp.domain=hubelbauer.net policy.is_org=yes
+      (MX Record found);
+    x-tls=pass smtp.version=TLSv1.2 smtp.cipher=ECDHE-RSA-AES128-GCM-SHA256
+      smtp.bits=128/128;
+    x-vs=clean score=15 state=0
+X-ME-VSCategory: clean
+X-CM-Envelope: MS4wfEIuaGmT6+ONTX/7KBmXJRfr29Bq4WRp4uYjV/heY4FVtYdoPiecp7uXlQt1OCjAuSUc0uVOS+gm2xGK10HllbXk96dc2CJlOwFnrCiTfAzjEWZkR8b2
+    Gitkc5Z9T0bCZqejSBGaIvTCN/So6Qli+cC2v/1yj3vyH5oT7Fblf0KQkbhlyT84z56MAIx2pmWKjXSRhWP3N/6zJ6QzfGazxwQ=
+X-CM-Analysis: v=2.3 cv=Ls28NEVc c=1 sm=1 tr=0 a=GNQOxgkJ+cerz/mR+4TyeA==:117
+    a=dapMudl6Dx4A:10 a=r77TgQKjGQsHNAKrUKIA:9 a=bt8Zh30PAAAA:8 a=Zmp_ymdGAAAA:8
+    a=1S3tCktThBATAvS2TggA:9 a=QEXdDO2ut3YA:10 a=oDFuHXxh8SsA:10
+    a=bGnhA-LZU0j-MpWe8LcA:9 a=2bJ2BYFVIsZcTvO_:21 a=_W_S_7VecoQA:10
+    a=frz4AuCg-hUA:10 a=gTEj_VwTRWxn843IdZpA:22
+X-ME-CMScore: 0
+X-ME-CMCategory: none
+Received-SPF: pass
+    (hubelbauer.net: Sender is authorized to use 'tomas@hubelbauer.net' in 'mfrom' identity (mechanism 'include:spf.messagingengine.com' matched))
+    receiver=mx4.messagingengine.com;
+    identity=mailfrom;
+    envelope-from="tomas@hubelbauer.net";
+    helo=out1-smtp.messagingengine.com;
+    client-ip=66.111.4.25
+Received: from mailout.nyi.internal (gateway1.nyi.internal [10.202.2.221])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by mailmx.nyi.internal (Postfix) with ESMTPS
+	for <tomas@hubelbauer.net>; Sat, 11 Aug 2018 07:19:57 -0400 (EDT)
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+	by mailout.nyi.internal (Postfix) with ESMTP id 4863421B20
+	for <tomas@hubelbauer.net>; Sat, 11 Aug 2018 07:19:57 -0400 (EDT)
+Received: from web4 ([10.202.2.214])
+  by compute4.internal (MEProxy); Sat, 11 Aug 2018 07:19:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hubelbauer.net;
+	 h=content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:subject:to:x-me-sender:x-me-sender:x-sasl-enc; s=
+	mesmtp; bh=U82ltyHV0a+a9rrSlV1v6IcChzuga2jKdSJJ09bSmsQ=; b=l6V1j
+	qp5to95HDfCb9D5JJVGA9DT5bS6pagwj0UqYgDyEsEX8qAjBTpkplxOXLhKBGX0D
+	tflXujVvx5uNzKSU3Vvcdqp1Qg+psPQd0uHtpC/nJKIUO/JCL9IaHfljdTSF/jNG
+	7URNjWE9WgYsMkbQZXuoqCRJSCFF1qzSKIZXDA=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=content-transfer-encoding:content-type
+	:date:from:message-id:mime-version:subject:to:x-me-sender
+	:x-me-sender:x-sasl-enc; s=fm3; bh=U82ltyHV0a+a9rrSlV1v6IcChzuga
+	2jKdSJJ09bSmsQ=; b=tqjQlA4xrZSBeXvsQhEv8+s6ADO77IMK7CSCht/rUeKzz
+	GVWVGqS4wJYsP0+xG/JSSG4fOEydbaJ7Nhd2DxSvdSiF9d6Ok6veq2BDarxv03lA
+	8pV2c8iFS754/peal6DSKDzHq2f6/aitfVmWX7IF/1Ok7zqvLsY7rM5rQxicRmPe
+	c8DciDmqDz2d7CmovqhhpS7VgXYlpJN2MJNnlxfSd/tULC90hIlB6Mdt7zIYXmuf
+	Obg0mZ/6DLuDYMhXCFwsVNWcdYV+A6TAxPLZ81F8RsTg5IhaYweukobSdSkb73A1
+	tGf7+seuwST/+6JsQ+EwyBaelgL2ChabHEzQLnUzQ==
+X-ME-Proxy: <xmx:XMZuW5hXWlIKsUWFBZ5XO8mB98a-UMQwoJjdAkgm1N47PyXADD-P6Q>
+    <xmx:XMZuW51abNou_NxqLsz7A4w6NAg6DkRmAcTgTZo-CNkW8i6JKMMB7A>
+    <xmx:XMZuWwbRJEPOgdsYsgtk5eqHGFeNiBIz-LxmSImH0Tb9_tvat92xIg>
+    <xmx:XMZuWxhHi43OOH7pAgq3IfLQQB1yNudSer4NBPwQ07C5qxqs3UCXtw>
+    <xmx:XMZuWxeHforhyUiXp2S_z5EyyRpAYvEKJIqcxP3nLFE9gnwjfTrFWw>
+    <xmx:XcZuW7PxrNz85H3F8fZin3UgXbpPvRwdIznYOD6xqawaSSizc-dPeQ>
+X-ME-Sender: <xms:XMZuW44bnPWUM8HSqvwAZesI-lWCUXOMLQnUeOe3urOpC94e4lAQOQ>
+Received: by mailuser.nyi.internal (Postfix, from userid 99)
+	id AFB04BA4CF; Sat, 11 Aug 2018 07:19:56 -0400 (EDT)
+Message-Id: <1533986396.728657.1470754984.07BBA640@webmail.messagingengine.com>
+From: =?utf-8?Q?Tom=C3=A1=C5=A1=20H=C3=BCbelbauer?= <tomas@hubelbauer.net>
+To: =?utf-8?Q?Tom=C3=A1=C5=A1=20H=C3=BCbelbauer?= <tomas@hubelbauer.net>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Type: multipart/alternative; boundary="_----------=_15339863967286572"
+X-Mailer: MessagingEngine.com Webmail Interface - ajax-9a5384d7
+Date: Sat, 11 Aug 2018 13:19:56 +0200
+Subject: Test Email
+
+This is a multi-part message in MIME format.
+
+--_----------=_15339863967286572
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+
+Test Email
+
+*Bold*
+
+*Italic*
+
+**_Etc._**
+
+https://avatars1.githubusercontent.com/u/6831144?s=3D400&u=3Dc405b690521bac=
+af72380cdb29867c2856e5184f&v=3D4
+ 1. A
+ 2. B
+ 3. C
+
+--
+  Tom=C3=A1=C5=A1 H=C3=BCbelbauer
+=C2=A0 tomas@hubelbauer.net
+
+--_----------=_15339863967286572
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset="utf-8"
+
+<!DOCTYPE html>
+<html>
+<head>
+<title></title>
+<style type=3D"text/css">p.MsoNormal,p.MsoNoSpacing{margin:0}</style>
+</head>
+<body><div>Test Email<br></div>
+<div><br></div>
+<div><b>Bold</b><br></div>
+<div><br></div>
+<div><i>Italic</i><br></div>
+<div><br></div>
+<div><b><i><u><s>Etc.</s></u></i></b><br></div>
+<div><br></div>
+<div><img alt=3D"https://avatars1.githubusercontent.com/u/6831144?s=3D400&a=
+mp;u=3Dc405b690521bacaf72380cdb29867c2856e5184f&amp;v=3D4" src=3D"https://a=
+vatars1.githubusercontent.com/u/6831144?s=3D400&amp;u=3Dc405b690521bacaf723=
+80cdb29867c2856e5184f&amp;v=3D4"><br></div>
+<div><br></div>
+<ol><li>A<br></li><li>B<br></li><li>C<br></li></ol><div><br></div>
+<div>--<br></div>
+<div>&nbsp; Tom=C3=A1=C5=A1 H=C3=BCbelbauer<br></div>
+<div>&nbsp; tomas@hubelbauer.net<br></div>
+</body>
+</html>
+
+--_----------=_15339863967286572--
+
