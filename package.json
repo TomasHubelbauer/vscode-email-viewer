@@ -15,7 +15,8 @@
         "Formatters"
     ],
     "activationEvents": [
-        "workspaceContains:**/*.eml"
+        "workspaceContains:**/*.eml",
+        "onFileSystem:eml"
     ],
     "main": "./out/extension",
     "scripts": {
@@ -35,7 +36,9 @@
     "dependencies": {
         "@types/fs-extra": "^5.0.4",
         "@types/mailparser": "^2.0.2",
+        "@types/pretty-bytes": "^5.1.0",
         "fs-extra": "^7.0.0",
-        "mailparser": "^2.3.2"
+        "mailparser": "^2.3.2",
+        "pretty-bytes": "^5.1.0"
     }
 }
