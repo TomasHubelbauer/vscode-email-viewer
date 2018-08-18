@@ -1,5 +1,9 @@
 # Changelog
 
+## `3.0.0` (2018-08-18)
+
+Add support for loading MSG files to complement the existing EML file loading support.
+
 ## `2.0.0` (2018-08-16)
 
 - Fix a bug where emails with attachments would load indefinitely
