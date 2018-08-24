@@ -1,5 +1,10 @@
 # Changelog
 
+## `4.0.0` (2018-08-24)
+
+- Preserve mounted emails as workspace directories by switching to a static scheme and adding EML and MSG file system activation events
+- Preview emails when opened as EML or MSG files or as the index HTML files in EML or MSG workspace mounted directories
+
 ## `3.0.0` (2018-08-18)
 
 Add support for loading MSG files to complement the existing EML file loading support.
