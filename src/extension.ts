@@ -313,7 +313,7 @@ class EmailFileSystemProvider implements vscode.FileSystemProvider {
                 if (stat.isFile()) {
                     const extension = extname(filePath).substr(1).toLowerCase();
                     if (extension === 'eml' || extension === 'msg') {
-                        // Return the file absolute path of the email file and the relative path within it
+                        // Return the absolute path of the file and the relative path within it
                         return { absolutePath: filePath, extension, relativePath: join(...components) };
                     } else {
                         // Handle the case where we found a file but it was not an email file
@@ -336,6 +336,7 @@ class EmailFileSystemProvider implements vscode.FileSystemProvider {
             }
         }
     }
+
     private async cache(path: string): Promise<Email | undefined> {
         const extension = extname(path).substr(1).toLowerCase();
         let email: Email;
