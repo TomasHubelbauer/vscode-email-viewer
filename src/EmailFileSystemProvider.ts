@@ -17,6 +17,7 @@ export default class EmailFileSystemProvider implements vscode.FileSystemProvide
   }
 
   public async stat(uri: vscode.Uri): Promise<vscode.FileStat> {
+    debugger;
     const { name, email, ctime, mtime } = await this.parse(uri);
 
     if (uri.path === '/') {
