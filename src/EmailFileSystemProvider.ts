@@ -17,7 +17,6 @@ export default class EmailFileSystemProvider implements vscode.FileSystemProvide
   }
 
   public async stat(uri: vscode.Uri): Promise<vscode.FileStat> {
-    debugger;
     const { name, email, ctime, mtime } = await this.parse(uri);
 
     if (uri.path === '/') {
@@ -100,7 +99,7 @@ export default class EmailFileSystemProvider implements vscode.FileSystemProvide
       html += '<br />';
 
       for (const attachment of email.attachments) {
-        const href = `${uri.scheme}:${attachment.name}?${uri.query}`;
+        const href = `${uri.scheme}:/${attachment.name}?${uri.query}`;
         html += `<a href='${href}'>${attachment.name} (${prettyBytes(attachment.size)})</a>`;
         html += '<br />';
       }

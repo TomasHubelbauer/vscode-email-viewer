@@ -2,13 +2,13 @@ import * as vscode from 'vscode';
 import EmailFileSystemProvider from './EmailFileSystemProvider';
 import * as path from 'path';
 
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
   const emailFileSystemProvider = new EmailFileSystemProvider();
   context.subscriptions.push(vscode.workspace.registerFileSystemProvider('eml', emailFileSystemProvider, { isCaseSensitive: true, isReadonly: true }));
   context.subscriptions.push(vscode.workspace.registerFileSystemProvider('msg', emailFileSystemProvider, { isCaseSensitive: true, isReadonly: true }));
   context.subscriptions.push(vscode.workspace.onDidOpenTextDocument(document => tryPreviewEmailDocument(document)));
   if (vscode.window.activeTextEditor !== undefined) {
-    //tryPreviewEmailDocument(vscode.window.activeTextEditor.document);
+    await tryPreviewEmailDocument(vscode.window.activeTextEditor.document);
   }
 }
 
@@ -54,22 +54,14 @@ async function tryPreviewEmailDocument(document: vscode.TextDocument) {
         return;
       }
 
-      const emailUri = vscode.Uri.parse(`${extension}:?${document.uri}`);
+      const emailUri = vscode.Uri.parse(`${extension}:/?${document.uri}`);
       if (vscode.workspace.getWorkspaceFolder(emailUri) === undefined) {
-        //vscode.workspace.updateWorkspaceFolders(vscode.workspace.workspaceFolders?.length || 0, 0, { uri: emailUri, name });
+        vscode.workspace.updateWorkspaceFolders(vscode.workspace.workspaceFolders?.length || 0, 0, { uri: emailUri, name });
       }
 
-      const webviewUri = vscode.Uri.parse(`${extension}:${name}.html?${document.uri}`);
-      try {
-        debugger;
-        const data = await vscode.workspace.fs.readFile(webviewUri);
-        debugger;
-        html = Buffer.from(data).toString('utf-8');
-      }
-      catch (error) {
-        debugger;
-        return;
-      }
+      const webviewUri = vscode.Uri.parse(`${extension}:/${name}.html?${document.uri}`);
+      const data = await vscode.workspace.fs.readFile(webviewUri);
+      html = Buffer.from(data).toString('utf-8');
     }
   }
 
