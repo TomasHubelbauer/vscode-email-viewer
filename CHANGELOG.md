@@ -1,5 +1,16 @@
 # Changelog
 
+## `5.0.0` (2020-05-31)
+
+The extension was rewritten to use the VS Code webview API instead of the VS Code
+`previewHtml` command which has been deprecated and subsequently removed breaking
+the extension before this fix was released.
+
+New instructions on how to use were added to the readme to make it clear there
+was no context menu item and the extension worked by listening for email documents
+to open. Also documented are instructions on how to close the workspace folders
+of the content and attachment virtual file system.
+
 ## `4.0.0` (2018-08-24)
 
 - Preserve mounted emails as workspace directories by switching to a static scheme and adding EML and MSG file system activation events

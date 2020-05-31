@@ -2,7 +2,7 @@
     "name": "email-viewer",
     "displayName": "Email Viewer",
     "description": "Mounts email message files (EML & MSG) as workspace directories in VS Code and enables previewing them",
-    "version": "4.0.0",
+    "version": "5.0.0",
     "publisher": "TomasHubelbauer",
     "repository": {
         "type": "git",
