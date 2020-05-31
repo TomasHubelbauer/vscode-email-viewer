@@ -44,3 +44,13 @@ times.
 Perhaps the webview needs to be allowed some security stuff for them to work or
 maybe webview messaging needs to be used and the file open request handled in
 the extension code.
+
+### Add a MSG file test case
+
+### Add tests
+
+### Consider rendering MSG file content as MarkDown HTML
+
+The body text seems to be raw and only processed for display by Outlook (?) so we can try to render it as MarkDown to make it look at least somewhat nice.
+
+If this is wrong and we get HTML it will just stay HTML after the MarkDown pass so this isn't risky.
