@@ -17,12 +17,15 @@ export default class EmailFileSystemProvider implements vscode.FileSystemProvide
   }
 
   public async stat(uri: vscode.Uri): Promise<vscode.FileStat> {
-    const { name, email, ctime, mtime } = await this.parse(uri);
+    const emailUri = vscode.Uri.parse(uri.query);
+    const email = await this.parse(emailUri);
+    const { ctime, mtime } = await vscode.workspace.fs.stat(emailUri);
 
     if (uri.path === '/') {
       return { type: vscode.FileType.Directory, ctime, mtime, size: 0 };
     }
 
+    const name = path.basename(emailUri.path);
     if (uri.path === `/${name}.html`) {
       return { type: vscode.FileType.File, ctime, mtime, size: this.preview(email, uri).length };
     }
@@ -36,13 +39,15 @@ export default class EmailFileSystemProvider implements vscode.FileSystemProvide
   }
 
   public async readDirectory(uri: vscode.Uri): Promise<[string, vscode.FileType][]> {
-    const { name, email } = await this.parse(uri);
+    const emailUri = vscode.Uri.parse(uri.query);
+    const email = await this.parse(emailUri);
 
     if (uri.path !== '/') {
       // TODO: Report
       return [];
     }
 
+    const name = path.basename(emailUri.path);
     return [
       [`${name}.html`, vscode.FileType.File],
       ...email.attachments
@@ -57,8 +62,10 @@ export default class EmailFileSystemProvider implements vscode.FileSystemProvide
   }
 
   public async readFile(uri: vscode.Uri): Promise<Uint8Array> {
-    const { name, email } = await this.parse(uri);
+    const emailUri = vscode.Uri.parse(uri.query);
+    const email = await this.parse(emailUri);
 
+    const name = path.basename(emailUri.path);
     if (uri.path === `/${name}.html`) {
       return this.preview(email, uri);
     }
@@ -111,18 +118,15 @@ export default class EmailFileSystemProvider implements vscode.FileSystemProvide
     return Buffer.from(html);
   }
 
-  private async parse({ query }: vscode.Uri): Promise<{ name: string; ctime: number, mtime: number, size: number; email: Email; }> {
-    const uri = vscode.Uri.parse(query);
+  private async parse(uri: vscode.Uri): Promise<Email> {
     const buffer = Buffer.from(await vscode.workspace.fs.readFile(uri));
-    const name = path.basename(query);
-    const { ctime, mtime, size } = await vscode.workspace.fs.stat(uri);
-    const extension = path.extname(query).substr(1).toLowerCase();
+    const extension = path.extname(uri.path).substr(1).toLowerCase();
     switch (extension) {
       case 'eml': {
-        return { name, ctime, mtime, size, email: await loadEml(buffer) };
+        return loadEml(buffer);
       }
       case 'msg': {
-        return { name, ctime, mtime, size, email: await loadMsg(buffer) };
+        return loadMsg(buffer);
       }
       default: {
         throw new Error(`Attempt to obtain email file with invalid extension ${extension}.`);
