@@ -2,7 +2,6 @@
 ![](https://vsmarketplacebadge.apphb.com/installs-short/TomasHubelbauer.email-viewer.svg)
 ![](https://github.com/tomashubelbauer/vscode-email-viewer/workflows/.github/workflows/main.yml/badge.svg)
 
-
 VS Code Email Viewer allows you to preview EML and MSG files in a VS Code web
 view (virtual document) as well as mounts EML and MSG file as virtual workspace
 directories giving you the option of browsing the email attachments.
