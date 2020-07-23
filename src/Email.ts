@@ -1,4 +1,6 @@
 type Email = {
+  ctime: number;
+  mtime: number;
   from?: string;
   to?: string;
   subject?: string;

@@ -1,31 +1,32 @@
 import * as vscode from 'vscode';
 import * as path from 'path';
 import * as prettyBytes from 'pretty-bytes';
-import loadEml from './loadEml';
-import loadMsg from './loadMsg';
+import cache from './cache';
 
 export default class EmailFileSystemProvider implements vscode.FileSystemProvider {
   private emitter = new vscode.EventEmitter<vscode.FileChangeEvent[]>();
   onDidChangeFile: vscode.Event<vscode.FileChangeEvent[]> = this.emitter.event;
 
   public watch(_uri: vscode.Uri, _options: { recursive: boolean; excludes: string[]; }): vscode.Disposable {
-    // TODO: Report
-    return new class {
-      dispose() {
-      }
-    };
+    return new vscode.Disposable(() => { });
   }
 
-  public async stat(uri: vscode.Uri): Promise<vscode.FileStat> {
+  public stat(uri: vscode.Uri): vscode.FileStat {
     const emailUri = vscode.Uri.parse(uri.query);
-    const email = await this.parse(emailUri);
-    const { ctime, mtime } = await vscode.workspace.fs.stat(emailUri);
+    const email = cache[emailUri.toString()];
+    const name = path.basename(emailUri.path);
+    if (!email) {
+      const error = `${name} was not found in cache! ${Object.keys(cache)}`;
+      vscode.window.showErrorMessage(error);
+      throw new Error(error);
+    }
+
+    const { ctime, mtime } = email;
 
     if (uri.path === '/') {
       return { type: vscode.FileType.Directory, ctime, mtime, size: 0 };
     }
 
-    const name = path.basename(emailUri.path);
     if (uri.path === `/${name}.html`) {
       return { type: vscode.FileType.File, ctime, mtime, size: this.preview(email, uri).length };
     }
@@ -35,19 +36,24 @@ export default class EmailFileSystemProvider implements vscode.FileSystemProvide
       return { type: vscode.FileType.File, ctime, mtime, size: attachment.size };
     }
 
-    return { type: vscode.FileType.Unknown, ctime: Date.now(), mtime: Date.now(), size: 0 };
+    return { type: vscode.FileType.Unknown, ctime, mtime, size: 0 };
   }
 
-  public async readDirectory(uri: vscode.Uri): Promise<[string, vscode.FileType][]> {
-    const emailUri = vscode.Uri.parse(uri.query);
-    const email = await this.parse(emailUri);
-
+  public readDirectory(uri: vscode.Uri): [string, vscode.FileType][] {
     if (uri.path !== '/') {
       // TODO: Report
       return [];
     }
 
+    const emailUri = vscode.Uri.parse(uri.query);
+    const email = cache[emailUri.toString()];
     const name = path.basename(emailUri.path);
+    if (!email) {
+      const error = `${name} was not found in cache! ${Object.keys(cache)}`;
+      vscode.window.showErrorMessage(error);
+      throw new Error(error);
+    }
+
     return [
       [`${name}.html`, vscode.FileType.File],
       ...email.attachments
@@ -56,16 +62,22 @@ export default class EmailFileSystemProvider implements vscode.FileSystemProvide
     ];
   }
 
-  public createDirectory(_uri: vscode.Uri): void | Thenable<void> {
-    // TODO: Report
-    debugger;
+  public createDirectory(_uri: vscode.Uri): void {
+    const error = 'createDirectory should not be called';
+    vscode.window.showErrorMessage(error);
+    throw new Error(error);
   }
 
-  public async readFile(uri: vscode.Uri): Promise<Uint8Array> {
+  public readFile(uri: vscode.Uri): Uint8Array {
     const emailUri = vscode.Uri.parse(uri.query);
-    const email = await this.parse(emailUri);
-
+    const email = cache[emailUri.toString()];
     const name = path.basename(emailUri.path);
+    if (!email) {
+      const error = `${name} was not found in cache! ${Object.keys(cache)}`;
+      vscode.window.showErrorMessage(error);
+      throw new Error(error);
+    }
+
     if (uri.path === `/${name}.html`) {
       return this.preview(email, uri);
     }
@@ -78,19 +90,22 @@ export default class EmailFileSystemProvider implements vscode.FileSystemProvide
     return Buffer.from([]);
   }
 
-  public writeFile(uri: vscode.Uri, content: Uint8Array, options: { create: boolean; overwrite: boolean; }): void | Thenable<void> {
-    // TODO: Report
-    debugger;
+  public writeFile(_uri: vscode.Uri, _content: Uint8Array, _options: { create: boolean; overwrite: boolean; }): void {
+    const error = 'writeFile should not be called';
+    vscode.window.showErrorMessage(error);
+    throw new Error(error);
   }
 
-  public delete(uri: vscode.Uri, options: { recursive: boolean; }): void | Thenable<void> {
-    // TODO: Report
-    debugger;
+  public delete(_uri: vscode.Uri, _options: { recursive: boolean; }): void {
+    const error = 'writeFile should not be called';
+    vscode.window.showErrorMessage(error);
+    throw new Error(error);
   }
 
-  public rename(oldUri: vscode.Uri, newUri: vscode.Uri, options: { overwrite: boolean; }): void | Thenable<void> {
-    // TODO: Report
-    debugger;
+  public rename(_oldUri: vscode.Uri, _newUri: vscode.Uri, _options: { overwrite: boolean; }): void {
+    const error = 'rename should not be called';
+    vscode.window.showErrorMessage(error);
+    throw new Error(error);
   }
 
   private preview(email: Email, uri: vscode.Uri) {
@@ -116,21 +131,5 @@ export default class EmailFileSystemProvider implements vscode.FileSystemProvide
 
     html += email.html;
     return Buffer.from(html);
-  }
-
-  private async parse(uri: vscode.Uri): Promise<Email> {
-    const buffer = Buffer.from(await vscode.workspace.fs.readFile(uri));
-    const extension = path.extname(uri.path).substr(1).toLowerCase();
-    switch (extension) {
-      case 'eml': {
-        return loadEml(buffer);
-      }
-      case 'msg': {
-        return loadMsg(buffer);
-      }
-      default: {
-        throw new Error(`Attempt to obtain email file with invalid extension ${extension}.`);
-      }
-    }
   }
 }
