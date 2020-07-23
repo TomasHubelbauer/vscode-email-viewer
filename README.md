@@ -25,6 +25,10 @@ See the [changelog](CHANGELOG.md).
 
 ## To-Do
 
+### Wait for the FileSystemProvider issue resolution
+
+https://github.com/microsoft/vscode/issues/103181
+
 ### Add an option of using the custom editor API instead of the webview API
 
 Perhaps the custom editor API (a read only editor) is a better fit than the web
